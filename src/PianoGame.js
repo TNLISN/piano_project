@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Piano, KeyboardShortcuts, MidiNumbers } from "react-piano";
 import Soundfont from "soundfont-player";
 import "react-piano/dist/styles.css";
+import HandleErrorPianoGame from "./HandleErrorPianoGame";
 
 function PianoGame() {
   const firstNote = MidiNumbers.fromNote("c3");
@@ -16,6 +17,7 @@ function PianoGame() {
   const [instrument, setInstrument] = useState(null);
   const [noteSequence, setNoteSequence] = useState([]);
   const [userSequence, setUserSequence] = useState([]);
+  const [errors, setErrors] = useState([]);
 
   useEffect(() => {
     const newAudioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -67,7 +69,7 @@ function PianoGame() {
     const newUserSequence = [...userSequence, midiNumber];
     for (let i = 0; i < newUserSequence.length; i++) {
       if (newUserSequence[i] !== noteSequence[i]) {
-        alert("Incorrect! Try again.");
+        setErrors((prevErrors) => [...prevErrors, "Incorrect! Try again."]);
         setUserSequence([]);
         return;
       }
@@ -92,6 +94,7 @@ function PianoGame() {
         width={700}
         keyboardShortcuts={keyboardShortcuts}
       />
+      <HandleErrorPianoGame errors={errors} />
     </div>
   );
 }
