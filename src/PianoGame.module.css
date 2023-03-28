@@ -1,0 +1,54 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+    padding: 20px;
+  }
+  
+  .controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  button {
+    background-color: #4caf50;
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 10px 24px;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+  
+  select {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 4px 2px;
+  }
+  
+  .feedback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .feedback p {
+    margin: 0;
+  }
+  

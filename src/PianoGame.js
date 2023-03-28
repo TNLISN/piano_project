@@ -4,6 +4,7 @@ import Soundfont from "soundfont-player";
 import "react-piano/dist/styles.css";
 import HandleErrorPianoGame from "./HandleErrorPianoGame";
 import SuccessMessage from "./SuccessMessage";
+import styles from "./PianoGame.module.css";
 
 function PianoGame() {
   const firstNote = MidiNumbers.fromNote("c3");
@@ -156,36 +157,35 @@ function PianoGame() {
   function handleDifficultyClick(difficulty) {
     setDifficulty(difficulty);
   }
-
+  
   return (
-    <div>
-      <select onChange={handleNoteRangeChange}>
-        <option value="c3,f5">C3 - F5</option>
-        <option value="c2,c5">C2 - C5</option>
-        <option value="c3,c6">C3 - C6</option>
-        <option value="c4,c7">C4 - C7</option>
-      </select>
-      <select value={instrumentName} onChange={handleInstrumentChange}>
-        <option value="acoustic_grand_piano">Grand Piano</option>
-        <option value="electric_guitar_clean">Electric Guitar</option>
-        <option value="violin">Violin</option>
-        <option value="flute">Flute</option>
-        <option value="trumpet">Trumpet</option>
-        <option value="xylophone">Xylophone</option>
-        <option value="synth_drum">Synth Drum</option>
-        <option value="marimba">Marimba</option>
-        <option value="acoustic_bass">Acoustic Bass</option>
-        <option value="harpsichord">Harpsichord</option>
-      </select>
-      <button onClick={() => handleDifficultyClick("easy")}>Easy</button>
-      <button onClick={() => handleDifficultyClick("medium")}>Medium</button>
-      <button onClick={() => handleDifficultyClick("hard")}>Hard</button>
-      <button onClick={() => handleDifficultyClick("impossible")}>Impossible</button>
-      <button onClick={handlePlayClick}>Play</button>
-      <button onClick={handleReplayClick}>Replay</button>
-      <button onClick={handleHintClick}>Hint</button>
-      <span>Hint: {hint.join(", ")}</span>
-      <p>Score: {score}</p>
+    <div className={styles.container}>
+      <div className={styles.controls}>
+        <button onClick={handlePlayClick}>Play</button>
+        <button onClick={handleReplayClick}>Replay</button>
+        <button onClick={() => handleDifficultyClick("easy")}>Easy</button>
+        <button onClick={() => handleDifficultyClick("medium")}>Medium</button>
+        <button onClick={() => handleDifficultyClick("hard")}>Hard</button>
+        <button onClick={() => handleDifficultyClick("impossible")}>Impossible</button>
+        <select value={instrumentName} onChange={handleInstrumentChange}>
+          <option value="acoustic_grand_piano">Grand Piano</option>
+          <option value="electric_guitar_clean">Electric Guitar</option>
+          <option value="violin">Violin</option>
+          <option value="flute">Flute</option>
+          <option value="trumpet">Trumpet</option>
+          <option value="xylophone">Xylophone</option>
+          <option value="synth_drum">Synth Drum</option>
+          <option value="marimba">Marimba</option>
+          <option value="acoustic_bass">Acoustic Bass</option>
+          <option value="harpsichord">Harpsichord</option>
+        </select>
+        <select onChange={handleNoteRangeChange}>
+          <option value="c3,f5">C3 - F5</option>
+          <option value="c2,c5">C2 - C5</option>
+          <option value="c3,c6">C3 - C6</option>
+          <option value="c4,c7">C4 - C7</option>
+        </select>
+      </div>
       <Piano
         noteRange={noteRange}
         playNote={handleNotePlay}
@@ -197,9 +197,17 @@ function PianoGame() {
         width={800}
         keyboardShortcuts={keyboardShortcuts}
         renderNoteLabel={renderNoteLabel}
+
       />
-      <SuccessMessage message={successMessage} />
-      <HandleErrorPianoGame errorMessage={errorMessage} />
+      <div className={styles.feedback}>
+        <SuccessMessage message={successMessage} />
+        <HandleErrorPianoGame errorMessage={errorMessage} />
+      </div>
+      <div>
+        <button onClick={handleHintClick}>Hint</button>
+        <span>{hint.join(", ")}</span>
+      </div>
+      <div>Score: {score}</div>
     </div>
   );
 }
