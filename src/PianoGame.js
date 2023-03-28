@@ -196,7 +196,7 @@ function PianoGame() {
             instrument.stop(midiNumber);
           }
         }}
-        width={window.innerWidth * 0.9}
+        width={window.innerWidth * 1}
         keyboardShortcuts={keyboardShortcuts}
         renderNoteLabel={renderNoteLabel}
       />
