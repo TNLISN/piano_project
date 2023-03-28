@@ -20,6 +20,8 @@ function PianoGame() {
   const [userSequence, setUserSequence] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [hint, setHint] = useState([]);
+  const [hintsUsed, setHintsUsed] = useState(0);
 
   useEffect(() => {
     const newAudioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -46,6 +48,8 @@ function PianoGame() {
 
   function handlePlayClick() {
     const randomSequence = generateRandomSequence(5);
+    setHint([]);
+    setHintsUsed(0);
     setNoteSequence(randomSequence);
     setUserSequence([]);
     playNoteSequence(randomSequence);
@@ -58,7 +62,7 @@ function PianoGame() {
         {keyboardShortcut && <div className="KeyboardShortcut">{keyboardShortcut}</div>}
       </div>
     );
-  }  
+  }
   function playNoteSequence(notes) {
     if (!instrument) return;
 
@@ -111,10 +115,21 @@ function PianoGame() {
   function handleReplayClick() {
     playNoteSequence(noteSequence);
   }
+  function handleHintClick() {
+    if (hintsUsed < noteSequence.length) {
+      const nextNote = noteSequence[hintsUsed];
+      const nextNoteName = MidiNumbers.getAttributes(nextNote).note;
+      setHint((prevHint) => [...prevHint, nextNoteName]);
+      setHintsUsed((prevHintsUsed) => prevHintsUsed + 1);
+      setScore((prevScore) => prevScore - 5);
+    }
+  }
   return (
     <div>
       <button onClick={handlePlayClick}>Play</button>
       <button onClick={handleReplayClick}>Replay</button>
+      <button onClick={handleHintClick}>Hint</button>
+      <span>Hint: {hint.join(", ")}</span>
       <p>Score: {score}</p>
       <Piano
         noteRange={{ first: firstNote, last: lastNote }}
