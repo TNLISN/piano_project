@@ -24,6 +24,7 @@ function PianoGame() {
   const [hintsUsed, setHintsUsed] = useState(0);
   const [difficulty, setDifficulty] = useState(null);
   const [instrumentName, setInstrumentName] = useState("acoustic_grand_piano");
+  const [noteRange, setNoteRange] = useState({ first: firstNote, last: lastNote });
 
   useEffect(() => {
     const newAudioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -36,6 +37,10 @@ function PianoGame() {
       }
     };
   }, []);
+  function handleNoteRangeChange(event) {
+    const range = event.target.value.split(",").map(MidiNumbers.fromNote);
+    setNoteRange({ first: range[0], last: range[1] });
+  }
 
   function loadInstrument(name) {
     if (audioContext) {
@@ -154,6 +159,12 @@ function PianoGame() {
 
   return (
     <div>
+      <select onChange={handleNoteRangeChange}>
+        <option value="c3,f5">C3 - F5</option>
+        <option value="c2,c5">C2 - C5</option>
+        <option value="c3,c6">C3 - C6</option>
+        <option value="c4,c7">C4 - C7</option>
+      </select>
       <select value={instrumentName} onChange={handleInstrumentChange}>
         <option value="acoustic_grand_piano">Grand Piano</option>
         <option value="electric_guitar_clean">Electric Guitar</option>
@@ -176,14 +187,14 @@ function PianoGame() {
       <span>Hint: {hint.join(", ")}</span>
       <p>Score: {score}</p>
       <Piano
-        noteRange={{ first: firstNote, last: lastNote }}
+        noteRange={noteRange}
         playNote={handleNotePlay}
         stopNote={(midiNumber) => {
           if (instrument) {
             instrument.stop(midiNumber);
           }
         }}
-        width={900}
+        width={800}
         keyboardShortcuts={keyboardShortcuts}
         renderNoteLabel={renderNoteLabel}
       />
