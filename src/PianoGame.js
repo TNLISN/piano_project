@@ -50,7 +50,15 @@ function PianoGame() {
     setUserSequence([]);
     playNoteSequence(randomSequence);
   }
-
+  function renderNoteLabel({ keyboardShortcut, midiNumber, isActive, isAccidental }) {
+    const note = MidiNumbers.getAttributes(midiNumber).note;
+    return (
+      <div className="NoteLabel">
+        <div className="NoteName">{note}</div>
+        {keyboardShortcut && <div className="KeyboardShortcut">{keyboardShortcut}</div>}
+      </div>
+    );
+  }  
   function playNoteSequence(notes) {
     if (!instrument) return;
 
@@ -116,8 +124,9 @@ function PianoGame() {
             instrument.stop(midiNumber);
           }
         }}
-        width={700}
+        width={900}
         keyboardShortcuts={keyboardShortcuts}
+        renderNoteLabel={renderNoteLabel}
       />
       <SuccessMessage message={successMessage} />
       <HandleErrorPianoGame errorMessage={errorMessage} />

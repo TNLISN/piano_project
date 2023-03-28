@@ -11,3 +11,17 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.NoteLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-weight: bold;
+  color: #23bbe9;
+}
+
+.KeyboardShortcut {
+  font-size: 0.6em;
+  margin-top: 2px;
+}
