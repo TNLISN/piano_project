@@ -9,11 +9,13 @@ import styles from "./PianoGame.module.css";
 function PianoGame() {
   const firstNote = MidiNumbers.fromNote("c3");
   const lastNote = MidiNumbers.fromNote("f5");
-  const keyboardShortcuts = KeyboardShortcuts.create({
-    firstNote: firstNote,
-    lastNote: lastNote,
-    keyboardConfig: KeyboardShortcuts.HOME_ROW,
-  });
+  const [keyboardShortcuts, setKeyboardShortcuts] = useState(
+    KeyboardShortcuts.create({
+      firstNote: firstNote,
+      lastNote: lastNote,
+      keyboardConfig: KeyboardShortcuts.HOME_ROW,
+    })
+  );
 
   const [audioContext, setAudioContext] = useState(null);
   const [instrument, setInstrument] = useState(null);
@@ -30,7 +32,6 @@ function PianoGame() {
   useEffect(() => {
     const newAudioContext = new (window.AudioContext || window.webkitAudioContext)();
     setAudioContext(newAudioContext);
-    loadInstrument(instrumentName);
 
     return () => {
       if (newAudioContext) {
@@ -38,9 +39,20 @@ function PianoGame() {
       }
     };
   }, []);
+  useEffect(() => {
+    if (audioContext) {
+      loadInstrument(instrumentName);
+    }
+  }, [audioContext]);
   function handleNoteRangeChange(event) {
     const range = event.target.value.split(",").map(MidiNumbers.fromNote);
     setNoteRange({ first: range[0], last: range[1] });
+    setKeyboardShortcuts(
+      KeyboardShortcuts.create({
+        firstNote: range[0],
+        lastNote: range[1],
+        keyboardConfig: KeyboardShortcuts.HOME_ROW,
+      }));
   }
 
   function loadInstrument(name) {
@@ -157,12 +169,10 @@ function PianoGame() {
   function handleDifficultyClick(difficulty) {
     setDifficulty(difficulty);
   }
-  
+
   return (
     <div className={styles.container}>
       <div className={styles.controls}>
-        <button onClick={handlePlayClick}>Play</button>
-        <button onClick={handleReplayClick}>Replay</button>
         <button onClick={() => handleDifficultyClick("easy")}>Easy</button>
         <button onClick={() => handleDifficultyClick("medium")}>Medium</button>
         <button onClick={() => handleDifficultyClick("hard")}>Hard</button>
@@ -186,6 +196,10 @@ function PianoGame() {
           <option value="c4,c7">C4 - C7</option>
         </select>
       </div>
+      <div>
+        <button onClick={handlePlayClick}>Play</button>
+        <button onClick={handleReplayClick}>Replay</button>
+      </div>
       <Piano
         noteRange={noteRange}
         playNote={handleNotePlay}
@@ -194,7 +208,7 @@ function PianoGame() {
             instrument.stop(midiNumber);
           }
         }}
-        width={800}
+        width={window.innerWidth * 0.9}
         keyboardShortcuts={keyboardShortcuts}
         renderNoteLabel={renderNoteLabel}
 
