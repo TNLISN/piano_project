@@ -23,13 +23,12 @@ function PianoGame() {
   const [hint, setHint] = useState([]);
   const [hintsUsed, setHintsUsed] = useState(0);
   const [difficulty, setDifficulty] = useState(null);
+  const [instrumentName, setInstrumentName] = useState("acoustic_grand_piano");
 
   useEffect(() => {
     const newAudioContext = new (window.AudioContext || window.webkitAudioContext)();
     setAudioContext(newAudioContext);
-    Soundfont.instrument(newAudioContext, "acoustic_grand_piano").then((piano) => {
-      setInstrument(piano);
-    });
+    loadInstrument(instrumentName);
 
     return () => {
       if (newAudioContext) {
@@ -37,6 +36,19 @@ function PianoGame() {
       }
     };
   }, []);
+
+  function loadInstrument(name) {
+    if (audioContext) {
+      Soundfont.instrument(audioContext, name).then((newInstrument) => {
+        setInstrument(newInstrument);
+        setInstrumentName(name);
+      });
+    }
+  }
+  function handleInstrumentChange(event) {
+    const newInstrumentName = event.target.value;
+    loadInstrument(newInstrumentName);
+  }
 
   function generateRandomSequence(length) {
     const randomNotes = [];
@@ -65,7 +77,7 @@ function PianoGame() {
       alert("Please select a difficulty before playing.");
     }
   }
-  
+
   function renderNoteLabel({ keyboardShortcut, midiNumber, isActive, isAccidental }) {
     const note = MidiNumbers.getAttributes(midiNumber).note;
     return (
@@ -139,14 +151,26 @@ function PianoGame() {
   function handleDifficultyClick(difficulty) {
     setDifficulty(difficulty);
   }
-  
+
   return (
     <div>
-    <button onClick={() => handleDifficultyClick("easy")}>Easy</button>
-    <button onClick={() => handleDifficultyClick("medium")}>Medium</button>
-    <button onClick={() => handleDifficultyClick("hard")}>Hard</button>
-    <button onClick={() => handleDifficultyClick("impossible")}>Impossible</button>
-    <button onClick={handlePlayClick}>Play</button>
+      <select value={instrumentName} onChange={handleInstrumentChange}>
+        <option value="acoustic_grand_piano">Grand Piano</option>
+        <option value="electric_guitar_clean">Electric Guitar</option>
+        <option value="violin">Violin</option>
+        <option value="flute">Flute</option>
+        <option value="trumpet">Trumpet</option>
+        <option value="xylophone">Xylophone</option>
+        <option value="synth_drum">Synth Drum</option>
+        <option value="marimba">Marimba</option>
+        <option value="acoustic_bass">Acoustic Bass</option>
+        <option value="harpsichord">Harpsichord</option>
+      </select>
+      <button onClick={() => handleDifficultyClick("easy")}>Easy</button>
+      <button onClick={() => handleDifficultyClick("medium")}>Medium</button>
+      <button onClick={() => handleDifficultyClick("hard")}>Hard</button>
+      <button onClick={() => handleDifficultyClick("impossible")}>Impossible</button>
+      <button onClick={handlePlayClick}>Play</button>
       <button onClick={handleReplayClick}>Replay</button>
       <button onClick={handleHintClick}>Hint</button>
       <span>Hint: {hint.join(", ")}</span>
