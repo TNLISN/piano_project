@@ -3,6 +3,7 @@ import { Piano, KeyboardShortcuts, MidiNumbers } from "react-piano";
 import Soundfont from "soundfont-player";
 import "react-piano/dist/styles.css";
 import HandleErrorPianoGame from "./HandleErrorPianoGame";
+import SuccessMessage from "./SuccessMessage";
 
 function PianoGame() {
   const firstNote = MidiNumbers.fromNote("c3");
@@ -66,36 +67,47 @@ function PianoGame() {
     if (instrument) {
       instrument.play(midiNumber);
     }
-  
+
     setUserSequence((prevUserSequence) => [...prevUserSequence, midiNumber]);
-  
+
     const newUserSequence = [...userSequence, midiNumber];
     for (let i = 0; i < newUserSequence.length; i++) {
       if (newUserSequence[i] !== noteSequence[i]) {
+        setSuccessMessage("");
+        setErrorMessage("");
         setErrorMessage("Incorrect! Try again.");
         setUserSequence([]);
         setScore((prevScore) => prevScore - 1);
         return;
       }
     }
-  
-    setErrorMessage(""); // Clear error message when user gets a note right
-    setScore((prevScore) => prevScore + 1); // Increase score by 1 for each correct note
-  
+    setSuccessMessage("");
+    setErrorMessage("");
+    setScore((prevScore) => prevScore + 1);
+
     if (newUserSequence.length === noteSequence.length) {
       alert("Correct!");
-      setScore((prevScore) => prevScore + 10); // Increase score by 10 for a correct sequence
+      setScore((prevScore) => prevScore + 10);
     }
+    for (let i = 0; i < newUserSequence.length; i++) {
+      if (newUserSequence[i] !== noteSequence[i]) {
+        return;
+      }
+    }
+    setSuccessMessage("");
+    setErrorMessage("");
+    setSuccessMessage("Correct note!");
+
   }
-  
+
   function handleReplayClick() {
     playNoteSequence(noteSequence);
   }
   return (
     <div>
-    <button onClick={handlePlayClick}>Play</button>
-    <button onClick={handleReplayClick}>Replay</button>
-    <p>Score: {score}</p>
+      <button onClick={handlePlayClick}>Play</button>
+      <button onClick={handleReplayClick}>Replay</button>
+      <p>Score: {score}</p>
       <Piano
         noteRange={{ first: firstNote, last: lastNote }}
         playNote={handleNotePlay}
@@ -107,6 +119,7 @@ function PianoGame() {
         width={700}
         keyboardShortcuts={keyboardShortcuts}
       />
+      <SuccessMessage message={successMessage} />
       <HandleErrorPianoGame errorMessage={errorMessage} />
     </div>
   );
