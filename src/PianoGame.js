@@ -22,6 +22,7 @@ function PianoGame() {
   const [successMessage, setSuccessMessage] = useState("");
   const [hint, setHint] = useState([]);
   const [hintsUsed, setHintsUsed] = useState(0);
+  const [difficulty, setDifficulty] = useState(null);
 
   useEffect(() => {
     const newAudioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -47,13 +48,24 @@ function PianoGame() {
   }
 
   function handlePlayClick() {
-    const randomSequence = generateRandomSequence(5);
-    setHint([]);
-    setHintsUsed(0);
-    setNoteSequence(randomSequence);
-    setUserSequence([]);
-    playNoteSequence(randomSequence);
+    if (difficulty) {
+      const noteCounts = {
+        easy: 2,
+        medium: 6,
+        hard: 12,
+        impossible: 20,
+      };
+      const randomSequence = generateRandomSequence(noteCounts[difficulty]);
+      setNoteSequence(randomSequence);
+      setUserSequence([]);
+      setHint([]);
+      setHintsUsed(0);
+      playNoteSequence(randomSequence);
+    } else {
+      alert("Please select a difficulty before playing.");
+    }
   }
+  
   function renderNoteLabel({ keyboardShortcut, midiNumber, isActive, isAccidental }) {
     const note = MidiNumbers.getAttributes(midiNumber).note;
     return (
@@ -124,9 +136,17 @@ function PianoGame() {
       setScore((prevScore) => prevScore - 5);
     }
   }
+  function handleDifficultyClick(difficulty) {
+    setDifficulty(difficulty);
+  }
+  
   return (
     <div>
-      <button onClick={handlePlayClick}>Play</button>
+    <button onClick={() => handleDifficultyClick("easy")}>Easy</button>
+    <button onClick={() => handleDifficultyClick("medium")}>Medium</button>
+    <button onClick={() => handleDifficultyClick("hard")}>Hard</button>
+    <button onClick={() => handleDifficultyClick("impossible")}>Impossible</button>
+    <button onClick={handlePlayClick}>Play</button>
       <button onClick={handleReplayClick}>Replay</button>
       <button onClick={handleHintClick}>Hint</button>
       <span>Hint: {hint.join(", ")}</span>
