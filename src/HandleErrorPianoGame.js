@@ -1,15 +1,16 @@
 import React from "react";
 
-function HandleErrorPianoGame({ errors }) {
+function HandleErrorPianoGame({ errorMessage }) {
   return (
     <div>
-      {errors.map((error, index) => (
-        <p key={index} style={{ color: "red" }}>
-          {error}
+      {errorMessage && (
+        <p style={{ color: "red" }}>
+          {errorMessage}
         </p>
-      ))}
+      )}
     </div>
   );
 }
+
 
 export default HandleErrorPianoGame;

@@ -17,7 +17,8 @@ function PianoGame() {
   const [instrument, setInstrument] = useState(null);
   const [noteSequence, setNoteSequence] = useState([]);
   const [userSequence, setUserSequence] = useState([]);
-  const [errors, setErrors] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     const newAudioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -59,30 +60,42 @@ function PianoGame() {
     }
   }
 
+  const [score, setScore] = useState(0);
+
   function handleNotePlay(midiNumber) {
     if (instrument) {
       instrument.play(midiNumber);
     }
-
+  
     setUserSequence((prevUserSequence) => [...prevUserSequence, midiNumber]);
-
+  
     const newUserSequence = [...userSequence, midiNumber];
     for (let i = 0; i < newUserSequence.length; i++) {
       if (newUserSequence[i] !== noteSequence[i]) {
-        setErrors((prevErrors) => [...prevErrors, "Incorrect! Try again."]);
+        setErrorMessage("Incorrect! Try again.");
         setUserSequence([]);
+        setScore((prevScore) => prevScore - 1);
         return;
       }
     }
-
+  
+    setErrorMessage(""); // Clear error message when user gets a note right
+    setScore((prevScore) => prevScore + 1); // Increase score by 1 for each correct note
+  
     if (newUserSequence.length === noteSequence.length) {
       alert("Correct!");
+      setScore((prevScore) => prevScore + 10); // Increase score by 10 for a correct sequence
     }
   }
-
+  
+  function handleReplayClick() {
+    playNoteSequence(noteSequence);
+  }
   return (
     <div>
-      <button onClick={handlePlayClick}>Play</button>
+    <button onClick={handlePlayClick}>Play</button>
+    <button onClick={handleReplayClick}>Replay</button>
+    <p>Score: {score}</p>
       <Piano
         noteRange={{ first: firstNote, last: lastNote }}
         playNote={handleNotePlay}
@@ -94,7 +107,7 @@ function PianoGame() {
         width={700}
         keyboardShortcuts={keyboardShortcuts}
       />
-      <HandleErrorPianoGame errors={errors} />
+      <HandleErrorPianoGame errorMessage={errorMessage} />
     </div>
   );
 }
