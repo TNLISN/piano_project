@@ -14,19 +14,19 @@ To install and run the Piano Game, follow these steps:
 
 1. Clone the repository:
 
-git clone https://github.com/TNLISN/piano_project.git
+`git clone https://github.com/TNLISN/piano_project.git`
 
 2. Change to the project directory:
 
-cd piano-game
+`cd piano-game`
 
 3. Install the required dependencies:
 
-npm install
+`npm install`
 
 4. Start the development server:
 
-npm start
+`npm start`
 
 
 The Piano Game should now be accessible at `http://localhost:3000` (or the port number specified in your environment).
